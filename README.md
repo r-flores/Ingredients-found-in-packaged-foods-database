@@ -18,3 +18,7 @@ $ unzip all_lstProducts_csv.zip
 $ wget https://www.dsld.nlm.nih.gov/dsld/downloads/all_lstIngredients_csv.zip
 $ unzip all_lstIngredients_csv.zip
 ```
+Cut the needed Data
+```bash
+$ cut -f 1,8,35 en.openfoodfacts.org.products.csv > OpenFoods.csv
+```
