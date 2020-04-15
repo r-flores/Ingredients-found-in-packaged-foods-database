@@ -173,3 +173,39 @@ merge (c:category{category_text:row.category})
 merge (p:product{product_text:row.product_name, code:row.code}) 
 merge (a:alternative{almonds:row.alt_almonds, cashews:row.alt_cashews, egg:row.alt_egg, fish:row.alt_fish, hazelnut:row.alt_hazelnuts, milk:row.alt_milk, peanut:row.alt_peanut, shellfish:row.alt_shellfish, soy:row.alt_soy, wheat:row.alt_wheat})
 ```
+2. Build the relationship between the UPC and product name, count returned 5975 on 4/15/2020
+```cql
+:auto USING PERIODIC COMMIT 1000
+LOAD csv with headers from "file:///all_data.csv" as row
+match (p:product{product_text:row.product_name, code:row.code})
+match (i:ingredients{ingredient_text:row.ingredients})
+merge (p)-[r:contain]->(i)
+return count(*)
+```
+3. Build the relationship between the product name and brand, count returned 5975 on 4/15/2020
+```cql
+:auto USING PERIODIC COMMIT 1000
+LOAD csv with headers from "file:///all_data.csv" as row
+match (p:product{product_text:row.product_name, code:row.code})
+match (b:brands{brand_text:row.brands})
+merge (b)-[r:owns]->(p)
+return count(*)
+```
+4. Build the relationship between the product name and category, count returned 5975 on 4/15/2020
+```cql
+:auto USING PERIODIC COMMIT 1000
+LOAD csv with headers from "file:///all_data.csv" as row
+match (p:product{product_text:row.product_name, code:row.code})
+match (c:category{category_text:row.category})
+merge (c)-[r:encompass]->(p)
+return count(*)
+```
+5. Build the relationship between the ingredients and alternative allergen names, count returned 5975 on 4/15/2020
+```cql
+:auto USING PERIODIC COMMIT 1000
+LOAD csv with headers from "file:///all_data.csv" as row
+match (a:alternative{almonds:row.alt_almonds, cashews:row.alt_cashews, egg:row.alt_egg, fish:row.alt_fish, hazelnut:row.alt_hazelnuts, milk:row.alt_milk, peanut:row.alt_peanut, shellfish:row.alt_shellfish, soy:row.alt_soy, wheat:row.alt_wheat})
+match (i:ingredients{ingredient_text:row.ingredients})
+merge (i)-[r:known_as]->(a)
+return count(*)
+```
