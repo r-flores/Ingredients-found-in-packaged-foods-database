@@ -76,3 +76,61 @@ all_Data$ingredients <- gsub('ingredients: ', '', all_Data$ingredients)
 ###merge products name back to total data###
 all_Data <- merge(all_Data, OFF_Data_Temp, by=c('code'), all.x = T)
 ```
+Strip the Dietary Supplement Label dataset and save only the necessary rows to match alternative names for ingredients
+```R
+DSDL_data <- subset(DSDL_data, select = c(1, 3))
+DSDL_data <- DSDL_data %>% rename("Alt_names" = "Different.spelling.or.synonyms...for.Primary.Ingredient.Group.ID..GRP_ID.")
+DSDL_data[DSDL_data=='']<-NA
+DSDL_data <- na.omit(DSDL_data)
+```
+Limit the alternative names to only the top allergens
+```R
+####reduce the DSDL data to terms associated with the top 8 allergens####
+# Milk, Eggs, Fish, shellfish, Tree Nuts, Peanuts, Wheat, soy
+
+test_DSDL <- DSDL_data[grep("\"MILK\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "MILK"
+all_DSDL_Data <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+test_DSDL <- DSDL_data[grep("\"PEANUT\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "PEANUT"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+# FIsh and shellfish fell into the same category
+test_DSDL <- DSDL_data[grep("\"FISH\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "FISH"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
+test_DSDL <- DSDL_data[grep("\"SHELLFISH\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "SHELLFISH"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
+test_DSDL <- DSDL_data[grep("\"EGG\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "EGG"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
+test_DSDL <- DSDL_data[grep("\"WHEAT\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "WHEAT"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
+test_DSDL <- DSDL_data[grep("\"SOY\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "SOY"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+# Tree nutsd have too many names to fall into the term TREE NUT therefor I will take common tree nuts
+test_DSDL <- DSDL_data[grep("\"CASHEWS\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "CASHEWS"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+test_DSDL <- DSDL_data[grep("\"ALMONDS\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "ALMONDS"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+test_DSDL <- DSDL_data[grep("\"HAZELNUTS\"", DSDL_data$Alt_names),]
+test_DSDL$Ingredient.Name <- "HAZELNUTS"
+test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
+all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+```
