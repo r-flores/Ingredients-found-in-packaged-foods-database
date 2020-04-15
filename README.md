@@ -161,3 +161,15 @@ Export to a csv which will be called all_data.csv
 ```R
 write.csv(all_Data, "all_data.csv", row.names = TRUE)
 ```
+Create a graph in Neo4j and move the all_data.csv to the import folder.
+
+The following cypher queries will establish nodes and their relationshps within the database
+1. Create the nodes
+```cql
+:auto USING PERIODIC COMMIT 1000 LOAD csv with headers from "file:///all_data.csv" as row 
+merge (i:ingredients{ingredient_text:row.ingredients})
+merge (b:brands{brand_text:row.brands})
+merge (c:category{category_text:row.category})
+merge (p:product{product_text:row.product_name, code:row.code}) 
+merge (a:alternative{almonds:row.alt_almonds, cashews:row.alt_cashews, egg:row.alt_egg, fish:row.alt_fish, hazelnut:row.alt_hazelnuts, milk:row.alt_milk, peanut:row.alt_peanut, shellfish:row.alt_shellfish, soy:row.alt_soy, wheat:row.alt_wheat})
+```
