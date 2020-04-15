@@ -64,7 +64,6 @@ DSDL_data <- na.omit(DSDL_data)
 
 ####reduce the DSDL data to terms associated with the top 8 allergens####
 # Milk, Eggs, Fish, shellfish, Tree Nuts, Peanuts, Wheat, soy
-## Using parital matching
 
 test_DSDL <- DSDL_data[grep("\"MILK\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "MILK"
@@ -116,12 +115,22 @@ all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
 all_DSDL_Data$Ingredient.Name <- tolower(all_DSDL_Data$Ingredient.Name)
 all_DSDL_Data$Alt_names <- tolower(all_DSDL_Data$Alt_names)
 
-
-
 ####remove any row with NA####
 ##This will significantlly reduce the number of entries may or may not be final Mainly for testing purposes as of now###
 all_Data <- na.omit(all_Data)
 
+DSDL_alt_name <- aggregate(x=all_DSDL_Data[c("Alt_names")], by=list(name=all_DSDL_Data$Ingredient.Name), min, na.rm = TRUE)
+all_Data$alt_almonds <- ifelse(grepl("almonds", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[1], "")
+all_Data$alt_cashews <- ifelse(grepl("cashews", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[2], "")
+all_Data$alt_egg <- ifelse(grepl("egg", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[3], "")
+all_Data$alt_fish <- ifelse(grepl("fish", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[4], "")
+all_Data$alt_hazelnuts <- ifelse(grepl("hazelnuts", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[5], "")
+all_Data$alt_milk <- ifelse(grepl("milk", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[6], "")
+all_Data$alt_peanut <- ifelse(grepl("peanut", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[7], "")
+all_Data$alt_shellfish <- ifelse(grepl("shellfish", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[8], "")
+all_Data$alt_soy <- ifelse(grepl("soy", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[9], "")
+all_Data$alt_wheat <- ifelse(grepl("wheat", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[10], "")
+
+
 ####Write CSV####
 write.csv(all_Data, "all_data.csv", row.names = TRUE)
-write.csv(all_DSDL_Data, "all_dsdl_data.csv", row.names = TRUE)
