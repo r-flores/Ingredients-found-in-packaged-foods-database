@@ -2,7 +2,7 @@
 Repository for packaged foods ingredients database<br>
 Create a Folder on your computer with the R script inside, this will <br>
 be the location where the data will be downloaded and the csv's for the database generated.<br>
-###### Data Download
+## Data Download
 The following will automatically set your directory and load the necessary libraries.
 ```R
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -18,7 +18,7 @@ download.file("https://static.openfoodfacts.org/data/en.openfoodfacts.org.produc
 download.file("https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_branded_food_csv_2019-12-17.zip", "FDC.zip")
 download.file("https://www.dsld.nlm.nih.gov/dsld/downloads/all_lstIngredients_csv.zip", "DSDL.zip")
 ```
-###### Data Extraction
+## Data Extraction
 Read in the Data
 ```R
 ###Read in OFF Data###
@@ -39,7 +39,7 @@ OFF_data <- subset(OFF_data, countries_en == "United States")
 OFF_data <- subset(OFF_data, select = -c(5))
 FDC_data <- subset(FDC_data, select = c(3, 4, 2, 8))
 ```
-######Data Formatting
+## Data Formatting
 Make the Data for the Open Food Facts and Food Data central all lowercase
 ```R
 ###Make all text lowercase###
@@ -51,7 +51,7 @@ FDC_data$ingredients <- tolower(FDC_data$ingredients)
 FDC_data$brand_owner <- tolower(FDC_data$brand_owner)
 FDC_data$branded_food_category <- tolower(FDC_data$branded_food_category)
 ```
-######Data Merging
+## Data Merging
 Merge the Open Food Facts Dataset with the Food Data Central Dataset 
 ```R
 #####Merge OpenFoodFacts Data with FoodDataCentral Data#####
@@ -143,7 +143,7 @@ Format the DSDL dataset
 all_DSDL_Data$Ingredient.Name <- tolower(all_DSDL_Data$Ingredient.Name)
 all_DSDL_Data$Alt_names <- tolower(all_DSDL_Data$Alt_names)
 ```
-######Data Cleaning
+## Data Cleaning
 Remove any NA's from the Data to ensure complete population
 ```R
 all_Data <- na.omit(all_Data)
@@ -162,7 +162,7 @@ all_Data$alt_shellfish <- ifelse(grepl("shellfish", all_Data$ingredients, ignore
 all_Data$alt_soy <- ifelse(grepl("soy", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[9], "")
 all_Data$alt_wheat <- ifelse(grepl("wheat", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[10], "")
 ```
-######Data Export
+## Data Export
 Export to a csv which will be called all_data.csv
 ```R
 write.csv(all_Data, "all_data.csv", row.names = TRUE)
