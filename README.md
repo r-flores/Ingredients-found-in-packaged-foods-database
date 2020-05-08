@@ -217,5 +217,18 @@ match (i:ingredients{ingredient_text:row.ingredients})
 merge (i)-[r:known_as]->(a)
 return count(*)
 ```
+## Queries
+1. Search for products with the ingredients 'corn' and cumin, results should return 29 records
+```cql
+match (n:product)-[r:contain]->(i:ingredients)
+where i.ingredient_text contains 'corn' and i.ingredient_text contains 'cumin'
+return n.product_text, i.ingredient_text
+```
+2. Search for allergen ingredients contained in 'mini glazed donuts', results should return 1 record
+```cql
+match (a:product)-[b:contain]->(n:ingredients)-[r:known_as]->(i:alternative)
+where a.product_text contains 'glazed mini donuts'
+return i, n.ingredient_text, a.product_text
+```
 ## Database Relationships
 ![](Images/DatabaseRelations.png)
