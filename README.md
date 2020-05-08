@@ -1,7 +1,8 @@
 # Ingredients-found-in-packaged-foods-database
 Repository for packaged foods ingredients database<br>
 Create a Folder on your computer with the R script inside, this will <br>
-be the location where the files will be downloaded and the csv's for the database generated.<br>
+be the location where the data will be downloaded and the csv's for the database generated.<br>
+## Data Download
 The following will automatically set your directory and load the necessary libraries.
 ```R
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
