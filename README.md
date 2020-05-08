@@ -167,8 +167,9 @@ Export to a csv which will be called all_data.csv
 ```R
 write.csv(all_Data, "all_data.csv", row.names = TRUE)
 ```
-Create a graph in Neo4j and move the all_data.csv to the import folder.
+Move the generated csv file to the import folder for your database in Neo4j
 
+## Database Creation
 The following cypher queries will establish nodes and their relationshps within the database
 1. Create the nodes
 ```cql
