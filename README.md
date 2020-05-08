@@ -170,6 +170,7 @@ write.csv(all_Data, "all_data.csv", row.names = TRUE)
 Move the generated csv file to the import folder for your database in Neo4j
 
 ## Database Creation
+
 The following cypher queries will establish nodes and their relationshps within the database
 1. Create the nodes
 ```cql
@@ -216,3 +217,5 @@ match (i:ingredients{ingredient_text:row.ingredients})
 merge (i)-[r:known_as]->(a)
 return count(*)
 ```
+## Database Relationships
+![](Images/DatabaseRelations.png)
