@@ -39,24 +39,20 @@ OFF_data = rename(OFF_data, c("ingredients" = "ingredients_text"))
 FDC_data = rename(FDC_data, c("code"="gtin_upc", "brands" = "brand_owner", "categories" = "branded_food_category"))
 OFF_Data_Temp <- subset(OFF_data, select = c(1, 2))
 OFF_data <- subset(OFF_data, select = c(1, 5, 3, 4))
-all_Data <- merge(FDC_data, OFF_data, by=c('code'), all.x = T)
 
+all_Data <- merge(FDC_data, OFF_data, by=c('code'), all.x = T)
 ###Replace all blanks with NA###
 all_Data[all_Data=='']<-NA
-
 ###merge both ingredient colnums with FDC taking priority and overwritting NA when possible
 all_Data$ingredients <- ifelse(is.na(all_Data$ingredients.x), all_Data$ingredients.y, all_Data$ingredients.x)
 all_Data <- subset(all_Data, select = c(1, 8, 3, 4, 6, 7))
-
 ###merge both band colnums same as ingredients
 all_Data$brands <- ifelse(is.na(all_Data$brands.x), all_Data$brands.y, all_Data$brands.x)
 all_Data <- subset(all_Data, select = c(1, 2, 7, 4, 6))
-
 ###merge both category colnums same as ingredients###
 all_Data$category <- ifelse(is.na(all_Data$categories.x), all_Data$categories.y, all_Data$categories.x)
 all_Data <- subset(all_Data, select = c(1, 2, 3, 6))
 all_Data$ingredients <- gsub('ingredients: ', '', all_Data$ingredients)
-
 ###merge products name back to total data###
 all_Data <- merge(all_Data, OFF_Data_Temp, by=c('code'), all.x = T)
 
@@ -76,29 +72,31 @@ test_DSDL <- DSDL_data[grep("\"PEANUT\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "PEANUT"
 test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
 all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
-
 # FIsh and shellfish fell into the same category
 test_DSDL <- DSDL_data[grep("\"FISH\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "FISH"
 test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
 all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
 test_DSDL <- DSDL_data[grep("\"SHELLFISH\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "SHELLFISH"
 test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
 all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
 test_DSDL <- DSDL_data[grep("\"EGG\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "EGG"
 test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
 all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
 test_DSDL <- DSDL_data[grep("\"WHEAT\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "WHEAT"
 test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
 all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
+
 test_DSDL <- DSDL_data[grep("\"SOY\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "SOY"
 test_DSDL <- test_DSDL[!duplicated(test_DSDL$Alt_names),]
 all_DSDL_Data <- rbind(all_DSDL_Data, test_DSDL)
-
 # Tree nutsd have too many names to fall into the term TREE NUT therefor I will take common tree nuts
 test_DSDL <- DSDL_data[grep("\"CASHEWS\"", DSDL_data$Alt_names),]
 test_DSDL$Ingredient.Name <- "CASHEWS"
@@ -118,9 +116,9 @@ all_DSDL_Data$Ingredient.Name <- tolower(all_DSDL_Data$Ingredient.Name)
 all_DSDL_Data$Alt_names <- tolower(all_DSDL_Data$Alt_names)
 
 ####remove any row with NA####
+##This will significantlly reduce the number of entries may or may not be final Mainly for testing purposes as of now###
 all_Data <- na.omit(all_Data)
 
-### merge back the colnums with alternative names to their corresponding entry
 DSDL_alt_name <- aggregate(x=all_DSDL_Data[c("Alt_names")], by=list(name=all_DSDL_Data$Ingredient.Name), min, na.rm = TRUE)
 all_Data$alt_almonds <- ifelse(grepl("almonds", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[1], "")
 all_Data$alt_cashews <- ifelse(grepl("cashews", all_Data$ingredients, ignore.case = T), DSDL_alt_name$Alt_names[2], "")
